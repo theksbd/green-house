@@ -1,3 +1,3 @@
-# smart-garden
+# Server Side
 
-A fullstack project about smart garden
+We use NodeJS, ExpressJS and MySQL to work on Backend
