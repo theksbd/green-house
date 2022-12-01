@@ -1,7 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 require("dotenv").config();
-const connection = require("./config/connectDB");
+const db = require("./config/connectDB");
 
 const app = express();
 
@@ -10,16 +10,16 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json({ limit: "50mb" }));
 
-const userRoute = require("./routes/user.route");
-const microRoute = require("./routes/micro.route");
-const infoRoute = require("./routes/info.route");
-
-app.use("/api/user", userRoute);
-app.use("/api/microbit", microRoute);
-app.use("/api/info", infoRoute);
-
 app.get("/", (req, res) => {
   res.send("Hello World!");
+});
+
+app.get("/users", (req, res) => {
+  const query = "SELECT * FROM `user`";
+  db.query(query, (err, result) => {
+    if (err) throw err;
+    res.status(200).json(result);
+  });
 });
 
 const PORT = process.env.PORT || 5000;
