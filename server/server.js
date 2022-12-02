@@ -1,7 +1,9 @@
 const express = require("express");
 const cors = require("cors");
-require("dotenv").config();
 const db = require("./config/connectDB");
+const appRoutes = require("./routes/appRoute");
+
+require("dotenv").config();
 
 const app = express();
 
@@ -14,13 +16,7 @@ app.get("/", (req, res) => {
   res.send("Hello World!");
 });
 
-app.get("/users", (req, res) => {
-  const query = "SELECT * FROM `user`";
-  db.query(query, (err, result) => {
-    if (err) throw err;
-    res.status(200).json(result);
-  });
-});
+app.use("/api", appRoutes);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
