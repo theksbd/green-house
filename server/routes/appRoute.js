@@ -1,14 +1,16 @@
 const express = require("express");
 const router = express.Router();
 const db = require("../config/connectDB");
-const { getUsers, login, getData } = require("../controllers/appController");
+const AppController = require("../controllers/appController");
 
 router.get("/", (req, res) => {
   res.send("Hello World from BE!");
 });
 
-router.post("/login", login);
-router.get("/users", getUsers);
-router.get("/data", getData);
+router.post("/login", AppController.login);
+router.get("/users", AppController.getAllUsers);
+router.get("/data", AppController.getData);
+router.get("/gardens", AppController.getAllGardens);
+router.get("/gardens-by-user-id", AppController.getGardenByUserId);
 
 module.exports = router;
