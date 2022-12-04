@@ -9,7 +9,8 @@ router.get("/", (req, res) => {
 
 router.post("/login", AppController.login);
 router.get("/users", AppController.getAllUsers);
-router.get("/data", AppController.getData);
+router.get("/data", AppController.getAllData);
+router.get("/data-by-date", AppController.getDataByDate);
 router.get("/gardens", AppController.getAllGardens);
 router.get("/gardens-by-user-id", AppController.getGardenByUserId);
 
