@@ -34,7 +34,7 @@ CREATE TABLE `data` (
   `door_status` tinyint(1) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `data_ibfk_1` (`garden_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -43,7 +43,7 @@ CREATE TABLE `data` (
 
 LOCK TABLES `data` WRITE;
 /*!40000 ALTER TABLE `data` DISABLE KEYS */;
-INSERT INTO `data` VALUES (1,1,'00:00:12','2022-12-02',20.5,12.2,10.8,0,0);
+INSERT INTO `data` VALUES (1,1,'00:00:12','2022-12-02',20.5,12.2,10.8,0,0),(2,1,'13:10:55','2022-12-04',21.1,10,8,0,0),(3,3,'06:55:02','2022-11-07',22,10,7,0,0),(4,2,'05:07:23','2022-11-21',23.8,18,7.7,0,0);
 /*!40000 ALTER TABLE `data` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -68,7 +68,7 @@ CREATE TABLE `garden` (
   KEY `tree_id` (`tree_id`),
   CONSTRAINT `garden_ibfk_1` FOREIGN KEY (`manager_id`) REFERENCES `user` (`id`),
   CONSTRAINT `garden_ibfk_2` FOREIGN KEY (`tree_id`) REFERENCES `tree` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -77,7 +77,7 @@ CREATE TABLE `garden` (
 
 LOCK TABLES `garden` WRITE;
 /*!40000 ALTER TABLE `garden` DISABLE KEYS */;
-INSERT INTO `garden` VALUES (1,1,'First Garden','2022-11-25','The first garden',1,'aio_admin_name','aio_admin_key');
+INSERT INTO `garden` VALUES (1,1,'First Garden','2022-11-25','The first garden',1,'aio_admin_name','aio_admin_key'),(2,1,'Another Garden of admin1','2022-11-26','Another Garden of admin1',1,'aio_admin_name','aio_admin_key'),(3,2,'First Garden of admin2','2022-10-20','First Garden of admin2',1,'aioadmin2name','aioadmin2key');
 /*!40000 ALTER TABLE `garden` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -141,6 +141,35 @@ INSERT INTO `phase` VALUES (1,1,'First phase',1,20,15.5);
 UNLOCK TABLES;
 
 --
+-- Table structure for table `pump_threshold`
+--
+
+DROP TABLE IF EXISTS `pump_threshold`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `pump_threshold` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `garden_id` int NOT NULL,
+  `high_threshold` double DEFAULT NULL,
+  `low_threshold` double DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `garden_id_idx` (`garden_id`),
+  CONSTRAINT `garden_id` FOREIGN KEY (`garden_id`) REFERENCES `garden` (`id`),
+  CONSTRAINT `pump_threshold_ibfk_1` FOREIGN KEY (`garden_id`) REFERENCES `garden` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `pump_threshold`
+--
+
+LOCK TABLES `pump_threshold` WRITE;
+/*!40000 ALTER TABLE `pump_threshold` DISABLE KEYS */;
+INSERT INTO `pump_threshold` VALUES (1,1,20,15),(2,2,30,12),(3,3,25,17);
+/*!40000 ALTER TABLE `pump_threshold` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `tree`
 --
 
@@ -176,7 +205,7 @@ CREATE TABLE `user` (
   `username` varchar(255) NOT NULL,
   `password` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -185,7 +214,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (1,'admin','123');
+INSERT INTO `user` VALUES (1,'admin1','123'),(2,'admin2','123');
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -198,4 +227,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-12-02 17:45:53
+-- Dump completed on 2022-12-05  9:43:21
