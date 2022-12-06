@@ -1,5 +1,5 @@
 const db = require("../config/connectDB");
-const TOKEN = require("../constant");
+const jwt = require("jsonwebtoken");
 
 class AppController {
   login(req, res) {
@@ -13,11 +13,15 @@ class AppController {
           .status(404)
           .json({ user: result, message: "User not found", success: false });
       } else {
+        const user = result[0];
+        const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
+          expiresIn: "1d",
+        });
         res.status(200).json({
-          user: result,
+          user,
+          token,
           message: "Login successfully",
           success: true,
-          token: TOKEN + result[0].id,
         });
       }
     });
@@ -33,7 +37,7 @@ class AppController {
 
   getAllData(req, res) {
     const q =
-      "SELECT * FROM data JOIN pump_threshold ON data.garden_id = pump_threshold.garden_id";
+      "SELECT data.*, pump_threshold.high_threshold, pump_threshold.low_threshold FROM data JOIN pump_threshold ON data.garden_id = pump_threshold.garden_id";
     db.query(q, (err, result) => {
       if (err) res.status(500).json(err);
       res.status(200).json(result);
@@ -57,10 +61,19 @@ class AppController {
     });
   }
 
+  getDataByGardenId(req, res) {
+    const q =
+      "SELECT data.*, pump_threshold.high_threshold, pump_threshold.low_threshold FROM data JOIN pump_threshold ON data.garden_id = pump_threshold.garden_id WHERE data.garden_id = ?";
+    db.query(q, [req.params.garden_id], (err, result) => {
+      if (err) res.status(500).json(err);
+      res.status(200).json(result);
+    });
+  }
+
   getDataByDate(req, res) {
     const { date } = req.body;
     const q =
-      "SELECT * FROM data JOIN pump_threshold ON data.garden_id = pump_threshold.garden_id WHERE date = ?";
+      "SELECT data.*, pump_threshold.high_threshold, pump_threshold.low_threshold FROM data JOIN pump_threshold ON data.garden_id = pump_threshold.garden_id WHERE data.date = ?";
     db.query(q, [date], (err, result) => {
       if (err) res.status(500).json(err);
       res.status(200).json(result);
