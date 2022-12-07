@@ -6,45 +6,22 @@ import "./Data.css";
 
 function Data() {
   const [data, setData] = useState([]);
-  const [allData, setAllData] = useState([]);
   const navigate = useNavigate();
   const location = useLocation();
 
   const currentGardenId = Number(location.pathname.split("/")[2]);
 
-  const getDataByGardenId = async () => {
-    const option = {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-    };
-    const response = await fetch(
-      `http://localhost:5000/api/data/${currentGardenId}`,
-      option
+  const getDataByDate = async (date) => {
+    const res = await fetch(
+      `http://localhost:5000/api/data/${currentGardenId}/${date}`
     );
-    const data = await response.json();
+    const data = await res.json();
     setData(data);
-    setAllData(data);
-  };
-
-  const isSameDate = (date1, date2) => {
-    return (
-      date1.getFullYear() === date2.getFullYear() &&
-      date1.getMonth() === date2.getMonth() &&
-      date1.getDate() === date2.getDate()
-    );
   };
 
   const handleChangeDate = (e) => {
-    const newData = allData.filter((item) =>
-      isSameDate(new Date(item.date), new Date(e.target.value))
-    );
-    setData(newData);
+    getDataByDate(e.target.value);
   };
-
-  useEffect(() => {
-    getDataByGardenId();
-  }, []);
 
   return (
     <div>
@@ -74,10 +51,8 @@ function Data() {
           <p>Temperature: {item.temperature}</p>
           <p>Humidity: {item.humidity}</p>
           <p>Soil Moisture: {item.soil_moisture}</p>
-          <p>Pump Status: {item.pump_status}</p>
-          <p>Door Status: {item.door_status}</p>
-          <p>High Threshold: {item.high_threshold}</p>
-          <p>Low Threshold: {item.low_threshold}</p>
+          <p>Pump Status: {item.pump_status ? "Open" : "Close"}</p>
+          <p>Door Status: {item.door_status ? "Open" : "Close"}</p>
         </div>
       ))}
     </div>

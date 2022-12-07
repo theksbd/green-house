@@ -51,7 +51,7 @@ function Homepage() {
       .then((res) => res.json())
       .then((res) => {
         if (res.success === true) {
-          localStorage.setItem("token", res.token);
+          localStorage.setItem("user", JSON.stringify(res.user));
           setWelcome("Welcome back, " + res.user.username);
         } else {
           setWelcome("Login Failed");
@@ -61,15 +61,8 @@ function Homepage() {
 
   const getGardenByUserId = async (e) => {
     e.preventDefault();
-    const option = {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-    };
-    const response = await fetch(
-      "http://localhost:5000/api/gardens-by-user-id",
-      option
-    );
+    const userId = JSON.parse(localStorage.getItem("user")).id;
+    const response = await fetch(`http://localhost:5000/api/gardens/${userId}`);
     const gardens = await response.json();
     setGardens(gardens);
   };
@@ -120,6 +113,8 @@ function Homepage() {
             <p>{garden.tree_id}</p>
             <p>{garden.AIO_Username}</p>
             <p>{garden.AIO_Key}</p>
+            <p>{garden.high_threshold}</p>
+            <p>{garden.low_threshold}</p>
             <button>
               <Link to={`/data/${garden.id}`} className="see-data">
                 See Data
@@ -138,8 +133,6 @@ function Homepage() {
             <p>{item.soil_moisture}</p>
             <p>{item.pump_status}</p>
             <p>{item.door_status}</p>
-            <p>{item.high_threshold}</p>
-            <p>{item.low_threshold}</p>
           </div>
         ))}
       </div>

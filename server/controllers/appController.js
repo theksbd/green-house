@@ -13,13 +13,10 @@ class AppController {
           .status(404)
           .json({ user: result, message: "User not found", success: false });
       } else {
-        const user = result[0];
-        const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
-          expiresIn: "1d",
-        });
+        const { password, ...user } = result[0];
+        user.garden_id = user.id;
         res.status(200).json({
           user,
-          token,
           message: "Login successfully",
           success: true,
         });
@@ -45,7 +42,7 @@ class AppController {
   }
 
   getAllGardens(req, res) {
-    const q = "SELECT * FROM garden";
+    const q = "SELECT * FROM garden JOIN pump_threshold ON pump_threshold.garden_id = garden.id";
     db.query(q, (err, result) => {
       if (err) res.status(500).json(err);
       res.status(200).json(result);
@@ -53,9 +50,10 @@ class AppController {
   }
 
   getGardenByUserId(req, res) {
-    const { id: userId } = req.body;
-    const q = "SELECT * FROM garden WHERE manager_id = ?";
-    db.query(q, [userId], (err, result) => {
+    const { user_id } = req.params;
+    const q =
+      "SELECT * FROM garden JOIN pump_threshold ON pump_threshold.garden_id = garden.id WHERE manager_id = ?";
+    db.query(q, [user_id], (err, result) => {
       if (err) res.status(500).json(err);
       res.status(200).json(result);
     });
@@ -71,10 +69,20 @@ class AppController {
   }
 
   getDataByDate(req, res) {
-    const { date } = req.body;
-    const q =
-      "SELECT data.*, pump_threshold.high_threshold, pump_threshold.low_threshold FROM data JOIN pump_threshold ON data.garden_id = pump_threshold.garden_id WHERE data.date = ?";
-    db.query(q, [date], (err, result) => {
+    const { garden_id, date } = req.params;
+    const q = "SELECT * FROM data WHERE data.date = ? AND data.garden_id = ?";
+    db.query(q, [date, garden_id], (err, result) => {
+      if (err) res.status(500).json(err);
+      res.status(200).json(result);
+    });
+  }
+
+  updatePumpThreshold(req, res) {
+    const { garden_id } = req.params;
+    const { high_threshold, low_threshold } = req.body;
+    const q = `UPDATE pump_threshold SET high_threshold = ?, low_threshold = ? WHERE garden_id = ?`;
+    const values = [high_threshold, low_threshold, garden_id];
+    db.query(q, values, (err, result) => {
       if (err) res.status(500).json(err);
       res.status(200).json(result);
     });
