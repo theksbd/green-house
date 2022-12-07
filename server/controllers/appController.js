@@ -1,6 +1,5 @@
 const db = require("../config/connectDB");
-const jwt = require("jsonwebtoken");
-
+const axios = require("axios");
 class AppController {
   login(req, res) {
     const { username, password } = req.body;
@@ -87,6 +86,52 @@ class AppController {
       res.status(200).json(result);
     });
   }
+
+  insertData(req, res){
+    var {garden_id} = req.params;
+    var query = "SELECT * FROM garden WHERE id = ? LIMIT 1";
+    db.query(query, [garden_id], async (error, result) =>{
+      if (error) res.status(500).json(error);
+      var params = {
+        params: {
+          "X-AIO-Key": result[0].AIO_Key
+        }
+      };
+      var AIO_Link = "https://io.adafruit.com/api/v2/"+result[0].AIO_Username+"/feeds/";
+      var pump = await axios.get(AIO_Link+"pump/data/last", params)
+        .then(response => response.data)
+        .then(data => data.value);
+      var temperature = await axios.get(AIO_Link + "temperature/data/last", params)
+        .then(response => response.data)
+        .then(data => data.value);
+      var moisture = await axios.get(AIO_Link + "moisture/data/last", params)
+        .then(response => response.data)
+        .then(data => data.value);
+      var humid = await axios.get(AIO_Link+ "humid/data/last", params)
+        .then(response => response.data)
+        .then(data => data.value);
+      var door = await axios.get(AIO_Link + "door/data/last", params)
+        .then(response => response.data)
+        .then(data => data.value);
+  
+      var date = new Date();
+      let mm = date.getMonth()+1;
+      let dd = date.getDate();
+      var dateString = date.getFullYear() + "-" + (mm>9 ? '' : '0') + mm + "-" + (dd>9 ? '' : '0') + dd;
+
+      let hh = date.getHours();
+      let mi = date.getMinutes();
+      let se = date.getSeconds();
+      var timeString = (hh>9 ? '' : '0') + hh + ":" + (mi>9 ? '' : '0') + mi + ":" + (se>9 ? '' : '0') + se;
+      
+      var query = "INSERT INTO data (garden_id, time, date, temperature, humidity, soil_moisture, pump_status, door_status) VALUES (?,?,?,?,?,?,?,?)";
+      db.query(query, [garden_id, timeString, dateString, temperature, humid, moisture, pump, door], (err, r) =>{
+        if (err) res.status(500).json(err);
+        res.status(200).json(r);
+      });
+    });
+  }
+  
 }
 
 module.exports = new AppController();

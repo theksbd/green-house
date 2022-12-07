@@ -15,4 +15,5 @@ router.get("/gardens/:user_id", AppController.getGardenByUserId);
 router.get("/data/:garden_id/:date", AppController.getDataByDate);
 router.put("/pump-threshold/:garden_id", AppController.updatePumpThreshold);
 
+router.post("/insert-data/:garden_id", AppController.insertData);
 module.exports = router;
