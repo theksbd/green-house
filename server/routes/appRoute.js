@@ -19,6 +19,6 @@ router.put(
   "/pump-threshold-by-period/:garden_id",
   AppController.updatePumpThresholdAtTheBeginningOfPeriod
 );
-router.get('/phase-status/:garden_id', AppController.getPhaseStatus)
+router.get("/phase-status/:garden_id", AppController.getPhaseStatus);
 
 module.exports = router;
