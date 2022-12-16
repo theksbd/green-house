@@ -70,10 +70,32 @@ class AppController {
 
   getDataByDate(req, res) {
     const { garden_id, date } = req.params;
-    const q = "SELECT * FROM data WHERE data.date = ? AND data.garden_id = ?";
+    const q = "SELECT * FROM data WHERE data.date = ? AND data.garden_id = ? ORDER BY data.time";
     db.query(q, [date, garden_id], (err, result) => {
       if (err) res.status(500).json(err);
       res.status(200).json(result);
+    })
+  }
+
+  getChartByDate(req, res) {
+    const { garden_id, date } = req.params;
+    const q = "SELECT * FROM data WHERE data.date = ? AND data.garden_id = ? ORDER BY time";
+    db.query(q, [date, garden_id], async (err, result) => {
+      if (err) res.status(500).json(err);
+      var temperature = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+      var moisture = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+      var humidity = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+      result.forEach(item => {
+        var time = parseInt(item.time[0] + item.time[1]);
+        temperature[time] = item.temperature;
+        moisture[time] = item.soil_moisture;
+        humidity[time] = item.humidity
+      });
+      res.status(500).json({
+        temperature: temperature,
+        moisture: moisture,
+        humidity: humidity
+      });
     });
   }
 
@@ -250,6 +272,10 @@ class AppController {
       const phase = result[phaseIndex];
       return res.status(200).json(phase);
     });
+  }
+
+  getDataInDay(req, res) {
+
   }
 }
 
