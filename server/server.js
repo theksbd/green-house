@@ -3,23 +3,25 @@ const cors = require("cors");
 const db = require("./config/connectDB");
 const appRoutes = require("./routes/appRoute");
 const mqtt = require("./mqtt/MQTTClient");
+const schedule = require("./controllers/appSchedule");
 
 
 mqtt.on("message", (topic, message) => {
   const split = topic.split("/");
   const moistureFeed = split[2];
-  if (moistureFeed == "moisture"){
+  if (moistureFeed == "moisture") {
     const data = parseInt(message.toString());
-    const q ="SELECT * FROM pump_threshold WHERE id = 1";
+    var garden_id = 1;
+    const q = "SELECT * FROM pump_threshold WHERE id = " + garden_id;
     db.query(q, async (err, result) => {
       let high = result[0].high_threshold;
       let low = result[0].low_threshold;
       if (data < low) {
-        const pumpFeed = [split[0],split[1],"pump"].join("/");
+        const pumpFeed = [split[0], split[1], "pump"].join("/");
         mqtt.publish(pumpFeed, "1");
       }
       else if (data > high) {
-        const pumpFeed = [split[0],split[1],"pump"].join("/");
+        const pumpFeed = [split[0], split[1], "pump"].join("/");
         mqtt.publish(pumpFeed, "0");
       }
     });
