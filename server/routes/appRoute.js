@@ -13,6 +13,7 @@ router.get("/data", AppController.getAllData);
 router.get("/gardens", AppController.getAllGardens);
 router.get("/gardens/:user_id", AppController.getGardenByUserId);
 router.get("/data/:garden_id/:date", AppController.getDataByDate);
+router.get("/chart/:garden_id/:date", AppController.getChartByDate);
 router.put("/pump-threshold/:garden_id", AppController.updatePumpThreshold);
 router.post("/insert-data/:garden_id", AppController.insertData);
 router.put(
