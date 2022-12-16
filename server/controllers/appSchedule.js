@@ -5,9 +5,9 @@ const AppController = require("../controllers/appController");
 
 class AppSchedule {
   constructor() {
-    schedule.scheduleJob("0 0 * * * *", this.updateData);
+    schedule.scheduleJob("1 0 * * * *", this.updateData);
     schedule.scheduleJob(
-      "10 * * * * *",
+      "1 0 0 * * *",
       this.updatePumpThresholdAtTheBeginningOfPeriod
     );
   }
