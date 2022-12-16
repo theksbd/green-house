@@ -14,7 +14,7 @@ class MQTTClient {
       this.mqtt = require("mqtt");
       this.username = "nhom3cnpm";
       this.port = 8883;
-      this.key = "aio_XlEE731ZNtANU0rlqCV14J26i9JN";
+      this.key = "aio_iTAO30Tz2W0h3P9zbw7YEBMu0qy3";
       this.url = `mqtts://${this.username}:${this.key}@io.adafruit.com`;
       this.client = this.mqtt.connect(this.url, this.port);
     }
