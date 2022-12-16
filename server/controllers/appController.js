@@ -1,6 +1,16 @@
 const db = require("../config/connectDB");
 const axios = require("axios");
 class AppController {
+  constructor() {
+    this.login = this.login.bind(this);
+    this.getGarden = this.getGarden.bind(this);
+    this.calculateDateDifference = this.calculateDateDifference.bind(this);
+    this.getPhaseStatus = this.getPhaseStatus.bind(this);
+    this.insertData = this.insertData.bind(this);
+    this.getDataByDate = this.getDataByDate.bind(this);
+    this.updatePumpThreshold = this.updatePumpThreshold.bind(this);
+  }
+
   login(req, res) {
     const { username, password } = req.body;
     const q = `SELECT * FROM user WHERE username = ? AND password = ? LIMIT 1`;
@@ -60,31 +70,39 @@ class AppController {
 
   getDataByDate(req, res) {
     const { garden_id, date } = req.params;
-    const q = "SELECT * FROM data WHERE data.date = ? AND data.garden_id = ? ORDER BY data.time";
+    const q =
+      "SELECT * FROM data WHERE data.date = ? AND data.garden_id = ? ORDER BY data.time";
     db.query(q, [date, garden_id], (err, result) => {
       if (err) res.status(500).json(err);
       res.status(200).json(result);
-    })
+    });
   }
 
   getChartByDate(req, res) {
     const { garden_id, date } = req.params;
-    const q = "SELECT * FROM data WHERE data.date = ? AND data.garden_id = ? ORDER BY time";
+    const q =
+      "SELECT * FROM data WHERE data.date = ? AND data.garden_id = ? ORDER BY time";
     db.query(q, [date, garden_id], async (err, result) => {
       if (err) res.status(500).json(err);
-      var temperature = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-      var moisture = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-      var humidity = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-      result.forEach(item => {
+      var temperature = [
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+      ];
+      var moisture = [
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+      ];
+      var humidity = [
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+      ];
+      result.forEach((item) => {
         var time = parseInt(item.time[0] + item.time[1]);
         temperature[time] = item.temperature;
         moisture[time] = item.soil_moisture;
-        humidity[time] = item.humidity
+        humidity[time] = item.humidity;
       });
       res.status(500).json({
         temperature: temperature,
         moisture: moisture,
-        humidity: humidity
+        humidity: humidity,
       });
     });
   }
@@ -206,46 +224,9 @@ class AppController {
     });
   }
 
-  async updatePumpThresholdAtTheBeginningOfPeriod(req, res) {
-    const { garden_id } = req.params;
-    const app = new AppController();
-    const { success, message, garden } = await app.calculateDateDifference(
-      garden_id
-    );
-    if (!success) return res.status(500).json(message);
-    const differentInDay = message;
-    const q = `SELECT * FROM phase WHERE tree_id = ? ORDER BY period ASC`;
-    const values = [garden.tree_id];
-    db.query(q, values, (err, result) => {
-      if (err) return res.status(500).json(err);
-      // Check if differentInDay is the first day of the new period
-      let oldPhaseIndex;
-      if (differentInDay === 0 || differentInDay === 1) {
-        oldPhaseIndex = -1; // then phase will be the first phase due to the oldPhaseIndex + 1
-      } else {
-        oldPhaseIndex = result.findIndex(
-          (item) => differentInDay - item.period === 1
-        );
-        if (oldPhaseIndex === -1)
-          return res.status(200).json({ message: "Still in the same phase" });
-      }
-      const phase = result[oldPhaseIndex + 1];
-      if (!phase)
-        return res.status(200).json({ message: "No any further phases" });
-      const { high_threshold, low_threshold } = phase;
-      const q = `UPDATE pump_threshold SET high_threshold = ?, low_threshold = ? WHERE garden_id = ?`;
-      const values = [high_threshold, low_threshold, garden_id];
-      db.query(q, values, (err, result) => {
-        if (err) return res.status(500).json(err);
-        return res.status(200).json(result);
-      });
-    });
-  }
-
   async getPhaseStatus(req, res) {
     const { garden_id } = req.params;
-    const app = new AppController();
-    const { success, message, garden } = await app.calculateDateDifference(
+    const { success, message, garden } = await this.calculateDateDifference(
       garden_id
     );
     if (!success) return res.status(500).json(message);
@@ -257,15 +238,51 @@ class AppController {
       const phaseIndex = result.findIndex(
         (item) => differentInDay <= item.period
       );
-      if (phaseIndex === -1)
-        return res.status(200).json({ message: "No phase" });
-      const phase = result[phaseIndex];
-      return res.status(200).json(phase);
+      const phase =
+        phaseIndex === -1
+          ? {
+              id: -1,
+              period: -1,
+              name: "No phase",
+            }
+          : result[phaseIndex];
+      return res.status(200).json({ phase, differentInDay });
     });
   }
 
-  getDataInDay(req, res) {
+  getGarden(req, res) {
+    const { garden_id } = req.params;
+    const q = `
+      SELECT
+        garden.*,
+        pump_threshold.low_threshold,
+        pump_threshold.high_threshold,
+        tree.name,
+        tree.img_url
+      FROM
+        garden
+      JOIN
+        pump_threshold
+      ON
+        pump_threshold.garden_id = garden.id
+      JOIN
+        tree
+      ON
+        tree.id = garden.tree_id
+      WHERE
+        garden.id = ?
+      `;
+    db.query(q, [garden_id], async (err, result) => {
+      if (err) return res.status(500).json(err);
+      let garden = result[0];
+      const phaseInfo = await axios.get(
+        `http://localhost:5000/api/phase-status/${garden_id}`
+      );
+      garden = { ...garden, ...phaseInfo.data };
+      // WIP
 
+      return res.status(200).json({ ...garden });
+    });
   }
 }
 
