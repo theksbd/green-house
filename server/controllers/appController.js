@@ -49,16 +49,6 @@ class AppController {
     });
   }
 
-  getGardenByUserId(req, res) {
-    const { user_id } = req.params;
-    const q =
-      "SELECT * FROM garden JOIN pump_threshold ON pump_threshold.garden_id = garden.id WHERE manager_id = ?";
-    db.query(q, [user_id], (err, result) => {
-      if (err) res.status(500).json(err);
-      res.status(200).json(result);
-    });
-  }
-
   getDataByGardenId(req, res) {
     const q =
       "SELECT data.*, pump_threshold.high_threshold, pump_threshold.low_threshold FROM data JOIN pump_threshold ON data.garden_id = pump_threshold.garden_id WHERE data.garden_id = ?";
@@ -249,6 +239,16 @@ class AppController {
         return res.status(200).json({ message: "No phase" });
       const phase = result[phaseIndex];
       return res.status(200).json(phase);
+    });
+  }
+
+  getGardenByUserId(req, res) {
+    const { user_id } = req.params;
+    const q =
+      "SELECT * FROM garden JOIN pump_threshold ON pump_threshold.garden_id = garden.id WHERE manager_id = ?";
+    db.query(q, [user_id], (err, result) => {
+      if (err) res.status(500).json(err);
+      res.status(200).json(result);
     });
   }
 }
