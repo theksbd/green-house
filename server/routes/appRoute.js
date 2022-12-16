@@ -15,7 +15,6 @@ router.get("/gardens/:garden_id", AppController.getGarden);
 router.get("/data/:garden_id/:date", AppController.getDataByDate);
 router.get("/chart/:garden_id/:date", AppController.getChartByDate);
 router.put("/pump-threshold/:garden_id", AppController.updatePumpThreshold);
-router.post("/insert-data/:garden_id", AppController.insertData);
 router.get("/phase-status/:garden_id", AppController.getPhaseStatus);
 
 module.exports = router;
