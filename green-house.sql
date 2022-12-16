@@ -34,7 +34,7 @@ CREATE TABLE `data` (
   `door_status` tinyint(1) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `data_ibfk_1` (`garden_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -68,7 +68,7 @@ CREATE TABLE `garden` (
   KEY `tree_id` (`tree_id`),
   CONSTRAINT `garden_ibfk_1` FOREIGN KEY (`manager_id`) REFERENCES `user` (`id`),
   CONSTRAINT `garden_ibfk_2` FOREIGN KEY (`tree_id`) REFERENCES `tree` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -77,7 +77,7 @@ CREATE TABLE `garden` (
 
 LOCK TABLES `garden` WRITE;
 /*!40000 ALTER TABLE `garden` DISABLE KEYS */;
-INSERT INTO `garden` VALUES (1,1,'First Garden','2022-11-25','The first garden',1,'aio_admin_name','aio_admin_key'),(2,1,'Another Garden of admin1','2022-11-26','Another Garden of admin1',1,'aio_admin_name','aio_admin_key'),(3,2,'First Garden of admin2','2022-10-20','First Garden of admin2',1,'aioadmin2name','aioadmin2key');
+INSERT INTO `garden` VALUES (1,1,'Garden of admin1','2022-11-26','The first garden',1,'nhom3cnpm','aio_qAgC39Ym1FzeE5lCzGgRwwyWRYVf'),(2,2,'Garden of admin2','2022-11-26','Garden of admin2',2,'aio_admin_name','aio_admin_key'),(3,3,'Garden of admin3','2022-10-20','First Garden of admin3',3,'aioadmin2name','aioadmin2key');
 /*!40000 ALTER TABLE `garden` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -97,7 +97,7 @@ CREATE TABLE `notification` (
   PRIMARY KEY (`id`),
   KEY `notification_ibfk_1` (`garden_id`),
   CONSTRAINT `notification_ibfk_1` FOREIGN KEY (`garden_id`) REFERENCES `garden` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -127,7 +127,7 @@ CREATE TABLE `phase` (
   PRIMARY KEY (`id`),
   KEY `tree_id` (`tree_id`),
   CONSTRAINT `phase_ibfk_1` FOREIGN KEY (`tree_id`) REFERENCES `tree` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -136,7 +136,7 @@ CREATE TABLE `phase` (
 
 LOCK TABLES `phase` WRITE;
 /*!40000 ALTER TABLE `phase` DISABLE KEYS */;
-INSERT INTO `phase` VALUES (1,1,'First phase',1,20,15.5);
+INSERT INTO `phase` VALUES (1,1,'Nảy mầm',4,75,60),(2,1,'Cây con',19,65,55),(3,1,'Tăng trưởng',50,75,65),(4,1,'Trổ hoa',65,85,75),(5,1,'Kết trái',95,75,65),(6,1,'Thu hoạch',100,65,60),(7,2,'Hình thành cây',5,80,70),(8,2,'Sinh trưởng sớm',30,80,70),(9,2,'Sinh dưỡng',50,80,70),(10,2,'Tạo quả',80,80,70),(11,2,'Thu hoạch',90,70,60),(12,3,'Nảy mầm và cây con',20,80,70),(13,3,'Tăng trưởng nhanh',100,85,75),(14,3,'Thu hoạch',120,70,65),(15,4,'Nảy mầm',21,75,65),(16,4,'Hình thành cây',40,75,70),(17,4,'Sinh trưởng và tạo củ',70,80,70),(18,4,'Phình củ',110,85,75),(19,4,'Thu hoạch',150,70,60);
 /*!40000 ALTER TABLE `phase` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -165,7 +165,7 @@ CREATE TABLE `pump_threshold` (
 
 LOCK TABLES `pump_threshold` WRITE;
 /*!40000 ALTER TABLE `pump_threshold` DISABLE KEYS */;
-INSERT INTO `pump_threshold` VALUES (1,1,20,15),(2,2,30,12),(3,3,25,17);
+INSERT INTO `pump_threshold` VALUES (1,1,75,65),(2,2,30,12),(3,3,25,17);
 /*!40000 ALTER TABLE `pump_threshold` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -179,8 +179,9 @@ DROP TABLE IF EXISTS `tree`;
 CREATE TABLE `tree` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
+  `img_url` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -189,7 +190,7 @@ CREATE TABLE `tree` (
 
 LOCK TABLES `tree` WRITE;
 /*!40000 ALTER TABLE `tree` DISABLE KEYS */;
-INSERT INTO `tree` VALUES (1,'First tree');
+INSERT INTO `tree` VALUES (1,'Ngô','https://raw.githubusercontent.com/theksbd/green-house/master/server/assets/corn.png'),(2,'Cà chua','https://raw.githubusercontent.com/theksbd/green-house/master/server/assets/tomato.png'),(3,'Bắp cải','https://raw.githubusercontent.com/theksbd/green-house/master/server/assets/cabbage.png'),(4,'Khoai tây','https://raw.githubusercontent.com/theksbd/green-house/master/server/assets/potato.png');
 /*!40000 ALTER TABLE `tree` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -205,7 +206,7 @@ CREATE TABLE `user` (
   `username` varchar(255) NOT NULL,
   `password` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -214,7 +215,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (1,'admin1','123'),(2,'admin2','123');
+INSERT INTO `user` VALUES (1,'admin1','123'),(2,'admin2','123'),(3,'admin3','123');
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -227,4 +228,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-12-05  9:43:21
+-- Dump completed on 2022-12-16 22:56:34
