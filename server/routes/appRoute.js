@@ -1,6 +1,5 @@
 const express = require("express");
 const router = express.Router();
-const db = require("../config/connectDB");
 const AppController = require("../controllers/appController");
 
 router.get("/", (req, res) => {
@@ -16,5 +15,7 @@ router.get("/data/:garden_id/:date", AppController.getDataByDate);
 router.get("/chart/:garden_id/:date", AppController.getChartByDate);
 router.put("/pump-threshold/:garden_id", AppController.updatePumpThreshold);
 router.get("/phase-status/:garden_id", AppController.getPhaseStatus);
+router.get("/trees", AppController.getAllTrees);
+router.put("/garden-initialize/:garden_id", AppController.initializeGarden);
 
 module.exports = router;

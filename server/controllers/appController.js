@@ -10,6 +10,8 @@ class AppController {
     this.getGarden = this.getGarden.bind(this);
     this.getChartByDate = this.getChartByDate.bind(this);
     this.getDataByDate = this.getDataByDate.bind(this);
+    this.getAllTrees = this.getAllTrees.bind(this);
+    this.initializeGarden = this.initializeGarden.bind(this);
   }
 
   login(req, res) {
@@ -55,15 +57,6 @@ class AppController {
     const q =
       "SELECT * FROM garden JOIN pump_threshold ON pump_threshold.garden_id = garden.id";
     db.query(q, (err, result) => {
-      if (err) res.status(500).json(err);
-      res.status(200).json(result);
-    });
-  }
-
-  getDataByGardenId(req, res) {
-    const q =
-      "SELECT data.*, pump_threshold.high_threshold, pump_threshold.low_threshold FROM data JOIN pump_threshold ON data.garden_id = pump_threshold.garden_id WHERE data.garden_id = ?";
-    db.query(q, [req.params.garden_id], (err, result) => {
       if (err) res.status(500).json(err);
       res.status(200).json(result);
     });
@@ -201,6 +194,36 @@ class AppController {
       );
       garden = { ...garden, ...phaseInfo.data };
       return res.status(200).json({ ...garden });
+    });
+  }
+
+  getAllTrees(req, res) {
+    const q = `SELECT * FROM tree ORDER BY id ASC`;
+    db.query(q, (err, result) => {
+      if (err) return res.status(500).json(err);
+      return res.status(200).json(result);
+    });
+  }
+
+  initializeGarden(req, res) {
+    const { garden_id } = req.params;
+    const { tree_id, start_date, description, name } = req.body;
+    const q = `UPDATE garden SET tree_id = ?, start_date = ?, description = ?, name = ? WHERE id = ?`;
+    const values = [tree_id, start_date, description, name, garden_id];
+    db.query(q, values, async (err, result) => {
+      if (err) return res.status(500).json(err);
+      const phaseInfo = await axios.get(
+        `http://localhost:5000/api/phase-status/${garden_id}`
+      );
+      const { high_threshold, low_threshold } = phaseInfo.data.phase;
+      const response = await axios.put(
+        `http://localhost:5000/api/pump-threshold/${garden_id}`,
+        {
+          high_threshold,
+          low_threshold,
+        }
+      );
+      return res.status(200).json({ message: "Initialize successfully" });
     });
   }
 }
