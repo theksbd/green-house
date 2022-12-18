@@ -79,13 +79,82 @@ class AppController {
     db.query(q, [date, garden_id], async (err, result) => {
       if (err) res.status(500).json(err);
       var temperature = [
-        null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
       ];
       var moisture = [
-        null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
       ];
       var humidity = [
-        null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
       ];
       result.forEach((item) => {
         var time = parseInt(item.time[0] + item.time[1]);
@@ -169,6 +238,7 @@ class AppController {
     const q = `
       SELECT
         garden.*,
+        garden.name AS garden_name,
         pump_threshold.low_threshold,
         pump_threshold.high_threshold,
         tree.name,
@@ -207,9 +277,10 @@ class AppController {
 
   initializeGarden(req, res) {
     const { garden_id } = req.params;
-    const { tree_id, start_date, description, name } = req.body;
+    const { tree_id, start_date, description, garden_name } = req.body;
     const q = `UPDATE garden SET tree_id = ?, start_date = ?, description = ?, name = ? WHERE id = ?`;
-    const values = [tree_id, start_date, description, name, garden_id];
+    const values = [tree_id, start_date, description, garden_name, garden_id];
+    console.log();
     db.query(q, values, async (err, result) => {
       if (err) return res.status(500).json(err);
       const phaseInfo = await axios.get(

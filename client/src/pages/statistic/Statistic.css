@@ -1,0 +1,13 @@
+.statistic-body {
+  display: flex;
+  width: 100%;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  height: 866px;
+}
+
+.statistic-body-chart {
+  position: relative;
+  width: 100%;
+}
