@@ -25,16 +25,14 @@ DROP TABLE IF EXISTS `data`;
 CREATE TABLE `data` (
   `id` int NOT NULL AUTO_INCREMENT,
   `garden_id` int NOT NULL,
-  `time` time NOT NULL,
-  `date` date NOT NULL,
-  `temperature` double NOT NULL,
-  `humidity` double NOT NULL,
-  `soil_moisture` double NOT NULL,
-  `pump_status` tinyint(1) NOT NULL,
-  `door_status` tinyint(1) NOT NULL,
+  `time` time DEFAULT NULL,
+  `date` date DEFAULT NULL,
+  `temperature` double DEFAULT NULL,
+  `humidity` double DEFAULT NULL,
+  `soil_moisture` double DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `data_ibfk_1` (`garden_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -43,7 +41,7 @@ CREATE TABLE `data` (
 
 LOCK TABLES `data` WRITE;
 /*!40000 ALTER TABLE `data` DISABLE KEYS */;
-INSERT INTO `data` VALUES (1,1,'00:00:12','2022-12-02',20.5,12.2,10.8,0,0),(2,1,'13:10:55','2022-12-04',21.1,10,8,0,0),(3,3,'06:55:02','2022-11-07',22,10,7,0,0),(4,2,'05:07:23','2022-11-21',23.8,18,7.7,0,0);
+INSERT INTO `data` VALUES (1,1,'00:00:12','2022-12-02',20.5,12.2,10.8),(2,1,'13:10:55','2022-12-04',21.1,10,8),(3,3,'06:55:02','2022-11-07',22,10,7),(4,2,'05:07:23','2022-11-21',23.8,18,7.7),(5,1,'16:00:00','2022-12-18',0,0,0);
 /*!40000 ALTER TABLE `data` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -57,12 +55,12 @@ DROP TABLE IF EXISTS `garden`;
 CREATE TABLE `garden` (
   `id` int NOT NULL AUTO_INCREMENT,
   `manager_id` int NOT NULL,
-  `name` varchar(255) NOT NULL,
-  `start_date` date NOT NULL,
-  `description` text NOT NULL,
+  `name` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `start_date` date DEFAULT NULL,
+  `description` text COLLATE utf8mb4_general_ci,
   `tree_id` int NOT NULL,
-  `AIO_Username` varchar(255) NOT NULL,
-  `AIO_Key` varchar(255) NOT NULL,
+  `AIO_Username` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `AIO_Key` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `manager_id` (`manager_id`),
   KEY `tree_id` (`tree_id`),
@@ -77,37 +75,8 @@ CREATE TABLE `garden` (
 
 LOCK TABLES `garden` WRITE;
 /*!40000 ALTER TABLE `garden` DISABLE KEYS */;
-INSERT INTO `garden` VALUES (1,1,'Garden of admin1','2022-11-26','The first garden',1,'nhom3cnpm','aio_qAgC39Ym1FzeE5lCzGgRwwyWRYVf'),(2,2,'Garden of admin2','2022-11-26','Garden of admin2',2,'aio_admin_name','aio_admin_key'),(3,3,'Garden of admin3','2022-10-20','First Garden of admin3',3,'aioadmin2name','aioadmin2key');
+INSERT INTO `garden` VALUES (1,1,'Green Garden','2022-12-08','New Green Garden',1,'nhom3cnpm','aio_qAgC39Ym1FzeE5lCzGgRwwyWRYVf'),(2,2,'Garden of admin2','2022-11-26','Garden of admin2',2,'aio_admin_name','aio_admin_key'),(3,3,'Garden of admin3','2022-12-17','First Garden of admin3',4,'aioadmin2name','aioadmin2key');
 /*!40000 ALTER TABLE `garden` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `notification`
---
-
-DROP TABLE IF EXISTS `notification`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `notification` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `type` varchar(255) NOT NULL,
-  `message` varchar(255) NOT NULL,
-  `read` tinyint(1) NOT NULL,
-  `garden_id` int NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `notification_ibfk_1` (`garden_id`),
-  CONSTRAINT `notification_ibfk_1` FOREIGN KEY (`garden_id`) REFERENCES `garden` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `notification`
---
-
-LOCK TABLES `notification` WRITE;
-/*!40000 ALTER TABLE `notification` DISABLE KEYS */;
-INSERT INTO `notification` VALUES (1,'Test','This is a test message',1,1);
-/*!40000 ALTER TABLE `notification` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -120,10 +89,10 @@ DROP TABLE IF EXISTS `phase`;
 CREATE TABLE `phase` (
   `id` int NOT NULL AUTO_INCREMENT,
   `tree_id` int NOT NULL,
-  `name` varchar(255) NOT NULL,
-  `period` int NOT NULL,
-  `high_threshold` double NOT NULL,
-  `low_threshold` double NOT NULL,
+  `name` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `period` int DEFAULT NULL,
+  `high_threshold` double DEFAULT NULL,
+  `low_threshold` double DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `tree_id` (`tree_id`),
   CONSTRAINT `phase_ibfk_1` FOREIGN KEY (`tree_id`) REFERENCES `tree` (`id`)
@@ -165,7 +134,7 @@ CREATE TABLE `pump_threshold` (
 
 LOCK TABLES `pump_threshold` WRITE;
 /*!40000 ALTER TABLE `pump_threshold` DISABLE KEYS */;
-INSERT INTO `pump_threshold` VALUES (1,1,75,65),(2,2,30,12),(3,3,25,17);
+INSERT INTO `pump_threshold` VALUES (1,1,65,55),(2,2,30,20),(3,3,75,65);
 /*!40000 ALTER TABLE `pump_threshold` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -178,8 +147,8 @@ DROP TABLE IF EXISTS `tree`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `tree` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL,
-  `img_url` varchar(255) NOT NULL,
+  `name` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `img_url` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -203,8 +172,8 @@ DROP TABLE IF EXISTS `user`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `user` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `username` varchar(255) NOT NULL,
-  `password` varchar(255) NOT NULL,
+  `username` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `password` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -228,4 +197,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-12-16 22:56:34
+-- Dump completed on 2022-12-18 18:23:22
