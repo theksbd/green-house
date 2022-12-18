@@ -79,13 +79,13 @@ class AppController {
     db.query(q, [date, garden_id], async (err, result) => {
       if (err) res.status(500).json(err);
       var temperature = [
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
       ];
       var moisture = [
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
       ];
       var humidity = [
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
       ];
       result.forEach((item) => {
         var time = parseInt(item.time[0] + item.time[1]);
@@ -93,7 +93,7 @@ class AppController {
         moisture[time] = item.soil_moisture;
         humidity[time] = item.humidity;
       });
-      res.status(500).json({
+      res.status(200).json({
         temperature: temperature,
         moisture: moisture,
         humidity: humidity,
