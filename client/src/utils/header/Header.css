@@ -1,0 +1,12 @@
+.content-header{
+    width: 100%;
+    max-width: 400px;
+    padding: 10px;
+    height: 60px;
+    font-size: 28px;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-weight: 600;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

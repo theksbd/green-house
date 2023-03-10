@@ -1,0 +1,35 @@
+.history-body{
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+}
+
+.history-body-content{
+    margin-top: 30px;
+    width: 95%;
+}
+
+.history-body-content table{
+    width: 100%;
+    font-size: 11px;
+}
+
+.history-body-content table, th, tr, td{
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+
+.history-body-content th {
+    background-color: #85e455;
+}
+
+.history-body-content tr:nth-child(even){
+    background-color: #85e45587
+}
+
+.history-body-content td{
+    text-align: center;
+}

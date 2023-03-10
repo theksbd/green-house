@@ -1,0 +1,28 @@
+.statistic-body{
+    display: flex;
+    flex-direction: column;
+}
+
+.filter-day{
+    width: 100%;
+    background-color: white;
+    display: flex;
+    justify-content: center;
+    padding: 5px;
+}
+
+.statistic-chart{
+    margin-top: 20px;
+}
+
+.chart{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    border-top: 2px dashed;
+    padding-top: 20px;
+}
+
+.chart canvas{
+    width: 100%;
+}
