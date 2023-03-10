@@ -1,7 +1,11 @@
-# green-house
+# Green House
 
-A fullstack project about smart garden  
+A fullstack project about green house (smart garden)  
 We use ReactJS, NodeJS, ExpressJS and MySQL in this project
+
+# Live Site
+
+[My Portfolio Website](https://hoang-thien-do.vercel.app/)
 
 ### Installation
 
