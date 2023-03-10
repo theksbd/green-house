@@ -11,7 +11,7 @@ import HumidityIcon from "./humid.png";
 import MoistureIcon from "./moisture.png";
 
 // const mqttClient = require("../../utils/MQTTClient");
-import { mqttClient } from "../../utils/MQTTClient";
+import * as mqttClient from "../../utils/MQTTClient";
 
 const Data = () => {
   const navigation = useNavigate();
