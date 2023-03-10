@@ -1,4 +1,4 @@
-export class MQTTClient {
+class MQTTClient {
   constructor() {
     this.defineField();
     this.client.on("connect", () => {
@@ -32,4 +32,4 @@ export class MQTTClient {
   }
 }
 
-// module.exports = new MQTTClient();
+module.exports = new MQTTClient();
