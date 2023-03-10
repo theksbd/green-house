@@ -32,4 +32,5 @@ class MQTTClient {
   }
 }
 
-module.exports = new MQTTClient();
+// module.exports = new MQTTClient();
+export default MQTTClient;
